@@ -1,0 +1,48 @@
+---
+title: "gwverse: Case for Support"
+fontsize: 11pt
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+subparagraph: yes
+header-includes: |
+  \usepackage{titlesec}
+  \titlespacing{\title}{0pt}{\parskip}{-\parskip}
+urlcolor: blue
+linkcolor: black
+mainfont: Arial
+bibliography: gw_SI_paper.bib
+csl: vancouver-brackets.csl
+---
+
+\vspace{-10truemm}
+
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center',message=FALSE,warning=FALSE)
+library(knitr)
+library(kableExtra)
+```
+
+
+```{r echo = F, message = F, warning=F}
+library(tidyverse)
+
+df = read.csv("scopus_GW_GWR_GeogWeightReg_Eng.csv")
+df %>% 
+  filter(Year > "1995" & Year < 2022) %>% 
+  group_by(Year) %>% 
+  summarise(`Annual Publication Count` = n()) %>%
+  ggplot(mapping = aes(x = Year, y = `Annual Publication Count`)) + 
+  geom_bar(stat="identity") -> P1
+
+```
+## Overview 
+
+This proposal describes a project that will drive the redevelopment of a well-used set of tools in spatial analysis based on Geographically Weighted (GW) frameworks, of which the best known is Geographically Weighted Regression (GWR)[@brunsdon1996geographically]. Our initial work has started this activity and created a new `gwverse` package (https://github.com/gwverse) which re-imagines current GW tools using a new modular framework and a new approach to function creation (ref to ArXiv doc TBC). We now want to extend this package development, to ensure the long-term sustainability of this heavily used open source research research software, through a community-led approach as described below.
+
+
+
+
+## References
