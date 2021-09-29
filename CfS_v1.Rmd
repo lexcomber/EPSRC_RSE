@@ -50,39 +50,44 @@ df %>%
   group_by(Year, Type) %>% 
   summarise(`Annual Publication Count` = n()) %>%
   ggplot(mapping = aes(x = Year, y = `Annual Publication Count`)) + 
-  geom_bar(stat="identity") +
+  geom_bar(stat="identity", fill = "tomato") +
   facet_wrap(~Type) -> P1
 ```
 
 ## Overview 
 
-This proposal describes a project that will drive the redevelopment of a well-used set of tools in spatial analysis based on Geographically Weighted (GW) frameworks, of which the best known is Geographically Weighted Regression (GWR)[@brunsdon1996geographically]. Our initial work has started this activity and created a new `gwverse` package (https://github.com/gwverse) which re-imagines current GW tools using a new modular framework and a new approach to function creation (ref to ArXiv doc TBC). We now want to extend this package development, to ensure the long-term sustainability of this heavily used open source research research software, through a community-led approach as described below.
+This proposal describes a project that will drive the redevelopment of a well-used set of tools in spatial analysis based on Geographically Weighted (GW) frameworks, of which the best known is Geographically Weighted Regression (GWR)[@brunsdon1996geographically]. Our initial work has started this activity and we have recently created a new `gwverse` package (https://github.com/gwverse). This re-imagines current GW tools using a new modular framework and a new approach to function creation (ref to ArXiv doc TBC). We now want to extend this package development, to ensure the long-term sustainability of this heavily used open source research research software, through a community-led approach as described below.
 
+The proposing team, including the originator of GWR, are the authors of the `GWmodel` R package (https://github.com/cran/GWmodel). This is the only R package that includes the latest developments in GWR and GW models. `GWmodel` has been a community driven package since 2014 and the main concern of this proposal is to enhance the engagement of the many different users communities in order to ensure the long-term sustainability of this important research software (and not the the proposing team!)
 
 ## Background
 
-GWR investigates the spatial variation in relationships between response and predictor variables[@brunsdon1996geographically, @fotheringham2002geographically]. It uses a moving window or kernel based approach to construct a series of local regression models reflecting a desire to  unpick one-size-fits-all global models in order to to accommodate spatial autocorrelation of observations and critical to support understandings of process spatial heterogeneity. This philosophy has been extended to other models which have adopted the GW framework. In these, the kernel is used to generate local data subsets that are weighted by their distance to the location under consideration, and providing local inputs to the model in question. As a result the GW family of methods now includes GW PCA [@harris2011geographically], GW descriptive statistics [@brunsdon2002geographically], GW discriminant analysis [@brunsdon2007geographically], GW correspondence matrices  [@comber2017geographically], GW structural equation models [@comber2017gwsem], GW evidence combination [@comber2016geographically], GW Variograms [@harris2010moving], GW network design [@harris2014geographically], GW Kriging [@harris2010moving], GW visualization [@dykes2007geographically]. 
+GWR investigates the spatial variation in relationships between response and predictor variables[@brunsdon1996geographically, @fotheringham2002geographically]. It uses a moving window or kernel based approach to construct a series of local regression models reflecting a desire to  unpick one-size-fits-all global models in order to to accommodate spatial autocorrelation of observations and critical to support understandings of process spatial heterogeneity. This philosophy has been extended to other models which have adopted the GW framework. In these, the kernel is used to generate local data subsets that are weighted by their distance to the location under consideration, and provide local inputs to the model in question. As a result the GW family of methods now includes GW PCA [@harris2011geographically], GW descriptive statistics [@brunsdon2002geographically], GW discriminant analysis [@brunsdon2007geographically], GW correspondence matrices  [@comber2017geographically], GW structural equation models [@comber2017gwsem], GW evidence combination [@comber2016geographically], GW Variograms [@harris2010moving], GW network design [@harris2014geographically], GW Kriging [@harris2010moving], GW visualization [@dykes2007geographically]. 
 
-More recently the GW framework has been picked up by the AI and Machine Learning communityes  GW artificial neural networks [@du2020geographically; @hagenauer2021geographically] and GW machine learning [@chen2018estimation; @li2019geographically; @quinones2021geographically; @xu2021spatial]. 
+## Impact
 
-The various GW models demonstrate a generic, open, and continually evolving technical framework that is being used to explore spatial heterogeneities across a wide range of disciplines, including EPSRC related domains. Importantly the GW framework has become a core analysis technique found in methods textbooks in healthcare [e.g. @cromley2011gis; @lawson2018bayesian; @meade2010medical] in economics, especially the Real Estate Market [@anselin2008spatial; @anselin2013advances], for example. And of course, many research application use GWR and GW techniques, reflected in publications on the Scopus database, with sharp increases in recent years (Figure \ref{fig:fig1}). 
+The various GW models demonstrate a generic, open, and continually evolving technical framework that is being used to explore spatial heterogeneities across a wide range of disciplines, including EPSRC related domains. For example, recently the GW framework has been picked up by the AI and Machine Learning communities GW artificial neural networks [@du2020geographically; @hagenauer2021geographically] and GW machine learning [@chen2018estimation; @li2019geographically; @quinones2021geographically; @xu2021spatial]. Importantly the GW framework has become a core analysis technique found in methods textbooks in healthcare [e.g. @cromley2011gis; @lawson2018bayesian; @meade2010medical] in economics, especially the Real Estate Market [@anselin2008spatial; @anselin2013advances], for example. And of course, many research application use GWR and GW techniques, as seen in publications on Scopus, with sharp increases in recent years (Figure \ref{fig:fig1}). 
+
+This trend further reinforced when papers at international conferences are examined (see Table X TBC after this doc is shared!). This also demonstrates the broad nature of the communities and disciplines that are using GW techniques, and the many new communities in which there has been a growth in demand for expliclty spatial  methods (eg in AI /ML), that move  beyond traditional statistical methods at many different any spatial scales, from micro to macro. **NB**: we recognise that there are many other approaches for this, but GWR and GW models are popular and well-developed.
 
 ```{r, fig1, echo=F, fig.cap = "All Geographically Weighted publications and those in EPSRC related domains (engineering, physics, computing, hydrology and climate) from https://www.scopus.com in Setember 2020", fig.height=3}
 P1 +theme_bw()
 ```
 
-The rise in the popularity of methods for undertaking spatial analysis, handling spatial autocorrelation and exploring spatial heterogeneity, generally and with GW models[^There are of course many other approaches for these but GWR GW models are an extremely popular and well-developed one.] (as shown in Figure \ref{fig:fig1}) is due to a number of factors. 
+```{r echo = F, eval = F}
+# see Table TBC after this doc is shared!
+df = read.csv("gw_conferences.csv")
+table(df$Source.title)
+```
+
+The rise in the popularity of methods for undertaking spatial analysis, handling spatial autocorrelation and exploring spatial heterogeneity, generally and with GW models (as shown in Figure \ref{fig:fig1}) is due to a number of factors: 
 
 - Increased availability of spatial data (ie with some form of location attached);
 - Recognition of the benefits of quantifying spatial patterns and the inferential advantages of approaches that explicitly consider location (eg cluster analysis, spatially informed regression, handling spatial dependencies);
 - The relative simplicity and conceptual elegance of GWR / GW models which fuelled their popularity;
+- The inclusion of basic GWR tools in a number of commercial software packages (ArcGIS, Carto ). 
 
-As a result tools for undertaking GWR are available via in a number of different software, and standalone implementations. 
+What is shown by the references cited above, Figure \ref{fig:fig1}, Table X, the adoption of GW methods by diverse users, etc, is the extent to which they are being used to examine critical societal questions and underpin important research. We are excited about the societal benefits might emerge from this project if these communities were fully mobilised to develop them further.
 
-
-
-
-
-our caveat: We are not making the case fo this as the best method and recodgise that There are of course many other approaches for examining sptial heterogeneity and spatial autocorreelation ofobsewrvbatyions, this is hust an extrtemely popuar and welldveloped one.
 
 ## References
