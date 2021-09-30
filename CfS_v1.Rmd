@@ -59,6 +59,10 @@ Notes
 from: https://www.ukri.org/opportunity/software-for-research-communities/
 Maximum eight pages, two on your track record and six on the scientific case.
 
+## Highlights
+
+Five bullets - TBC 
+
 ## Overview 
 
 This proposal describes a 2-year project that will drive the redevelopment of a well-used set of tools in spatial analysis based on Geographically Weighted (GW) frameworks, of which the best known is Geographically Weighted Regression (GWR) [@brunsdon1996geographically]. Our initial work has started this activity and we have recently created a new `gwverse` package (https://github.com/gwverse). This re-imagines current GW tools using a new modular framework and a new approach to GW function creation (described in [@comber2021gwverse]). We now want to extend this package development, to ensure the long-term sustainability of this heavily used open source research research software, through a community-led approach as described below.
