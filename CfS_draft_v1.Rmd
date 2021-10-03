@@ -1,0 +1,237 @@
+---
+title: "gwverse: Case for Support"
+fontsize: 11pt
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+subparagraph: yes
+urlcolor: blue
+linkcolor: black
+mainfont: Arial
+bibliography: epsrc_cfs_copy_short.bib
+csl: style_v2.csl
+---
+
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center',message=FALSE,warning=FALSE)
+library(knitr)
+library(kableExtra)
+```
+
+
+```{r echo = F, eval = F, message = F, warning=F}
+library(tidyverse)
+
+df = read.csv("scopus_GW_GWR_GeogWeightReg_Eng.csv")
+df %>% 
+  filter(Year > "1995" & Year < 2022) %>% 
+  group_by(Year) %>% 
+  summarise(`Annual Publication Count` = n()) %>%
+  ggplot(mapping = aes(x = Year, y = `Annual Publication Count`)) + 
+  geom_bar(stat="identity") -> P1
+```
+
+```{r echo = F, message = F, warning=F}
+library(tidyverse)
+df = read.csv("scopus_GW_GWR_GeogWeightReg_Eng.csv")
+df %>% mutate(Type = "EPSRC related") %>% select(Year, Type) -> df
+df2 = read.csv("scopus_GW_GWR_GeogWeightReg.csv")
+df2 %>% mutate(Type = "ALL") %>% select(Year, Type) -> df2
+df = rbind(df, df2) %>% as_tibble() 
+
+df %>% 
+  filter(Year > "1995" & Year < 2022) %>% 
+  group_by(Year, Type) %>% 
+  summarise(`Annual Publication Count` = n()) %>%
+  ggplot(mapping = aes(x = Year, y = `Annual Publication Count`)) + 
+  geom_bar(stat="identity", fill = "tomato") +
+  facet_wrap(~Type) -> P1
+```
+
+Notes
+from: https://www.ukri.org/opportunity/software-for-research-communities/
+Maximum eight pages, two on your track record and six on the scientific case.
+
+
+## Highlights
+
+Five bullets - TBC 
+
+## Overview 
+
+This proposal describes a 2-year project that will drive the redevelopment of a well-used set of tools in spatial analysis based on Geographically Weighted (GW) frameworks, of which the best known is Geographically Weighted Regression (GWR) [@brunsdon1996geographically]. Our initial work has started this activity and we have recently created a new `gwverse` package (https://github.com/gwverse). This re-imagines current GW tools using a new modular framework and a new approach to GW function creation (described in [@comber2021gwverse]). We now want to extend this package development, to ensure the long-term sustainability of this heavily used open source research research software, through a community-led approach as described below.
+
+The proposing team, including the originator of GWR, are the authors of the `GWmodel` R package (https://github.com/cran/GWmodel). This is the only R package that includes the latest developments in GWR and GW models. The `GWmodel` package [@lu2014gwmodel] has been a community driven package since 2014. It is managed by a team of academics (the proposing team) with no formal software development expertise. As a consequence of `GWmodel` being managed by people in their spare, is that functionally has occurs on a piecemeal basis without the over-arching organisation of the package being revised. As a consequence the package and its tools has many inconsistencies in the help pages (depth of detail, examples, etc), in the application of the GW various refinements and specification options and the vignettes. The result is that  whilst the complexity of the package has increased, allowing more refined approaches to GWR for example, this refinement has not been uniform across the main groups of GWR functionality, or for that matter any GW model. The `GWmodel` packaage is ripe for an overhaul and a new GW verse structure for doing this has been proposed as summarised in the next section (and described in full in [@comber2021gwverse]).  
+
+The main concern of this proposal is to ensure the long-term sustainability of this important research software (and not the the proposing team!) through software development and enhanced engagement of the many GW and GWR user communities. To support sustainability and user community=driven software development, a main part of the project is to establish protocols to do this, based on current best practice and driven by the project RSE. The plans and timescales have been designed with flexibility in mind to allow them to adapt as the expertise within the team and the engagement with the community both develop.  
+
+## Background: GWR and GW models
+
+GWR investigates the spatial variation in relationships between response and predictor variables [@brunsdon1996geographically, @fotheringham2002geographically]. It uses a moving window or kernel based approach to construct a series of local regression models reflecting a desire to unpick one-size-fits-all global models in order to to accommodate spatial autocorrelation of observations and critical to support understandings of process spatial heterogeneity. This philosophy has been extended to other models which have adopted the GW framework. In these, the kernel is used to generate local data subsets that are weighted by their distance to the location under consideration, and provide local inputs to the model in question. As a result the GW family of methods now includes GW PCA [@harris2011geographically], GW descriptive statistics [@brunsdon2002geographically], GW discriminant analysis [@brunsdon2007geographically], GW correspondence matrices  [@comber2017geographically], GW structural equation models [@comber2017gwsem], GW evidence combination [@comber2016geographically], GW Variograms [@harris2010moving], GW network design [@harris2014geographically], GW Kriging [@harris2010moving], GW visualization [@dykes2007geographically]. A  critical step in any GW model is the determination of the kernel size as this drives the scale of aggregation. Optimal bandwidths are determined through some measure of model fit, such as leave one out cross validation or AIC in regression.    
+
+A further key GW development is  Multiscale GW (MS GW) analysis. In a standard GW model a single bandwidth is used. This may be unrealistic because it implicitly assumes, in a regression for example, that each response-to-predictor relationship operates at the same spatial scale. In reality some may operate at larger scales and others at smaller ones, and a standard GWR nullifies these differences when it determines a ‘best-on-average’ bandwidth. To  address this, MS GW models [@yang2014extension; @fotheringham2017multiscale] determines a bandwidth for each of the input variables on the right hand side of the equation  (e.g the predictors in a regression). In regression, MS GWR is now recommended as the default GWR [@comber2020gwr]
+
+
+## Impact
+
+The various GW models demonstrate a generic, open, and continually evolving technical framework that is being used to explore spatial heterogeneities across a wide range of disciplines, including EPSRC related domains. For example, recently the GW framework has been picked up by the AI and Machine Learning communities GW artificial neural networks [@du2020geographically; @hagenauer2021geographically] and GW machine learning [@chen2018estimation; @li2019geographically; @quinones2021geographically; @xu2021spatial]. Importantly the GW framework has become a core analysis technique found in methods textbooks in healthcare [e.g. @cromley2011gis; @lawson2018bayesian; @meade2010medical] in economics, especially the Real Estate Market [@anselin2008spatial; @anselin2013advances], for example. And of course, many research application use GWR and GW techniques, as seen in publications on Scopus, with sharp increases in recent years (Figure \ref{fig:fig1}). 
+
+This trend further reinforced when papers at international conferences are examined (see Table X TBC after this doc is shared!). This also demonstrates the broad nature of the communities and disciplines that are using GW techniques, and the many new communities in which there has been a growth in demand for explicitly spatial  methods (e.g. in AI /ML), that move  beyond traditional statistical methods at many different any spatial scales, from micro to macro. **NB**: we recognise that there are many other approaches for this, but GWR and GW models are popular and well-developed.
+
+```{r, fig1, echo=F, fig.cap = "All Geographically Weighted publications and those in EPSRC related domains (engineering, physics, computing, hydrology and climate) from https://www.scopus.com in Setember 2020.", fig.height=3}
+P1 +theme_bw()
+```
+
+```{r echo = F, eval = F}
+# see Table TBC after this doc is shared!
+df = read.csv("gw_conferences.csv")
+table(df$Source.title)
+```
+
+The rise in the popularity of methods for undertaking spatial analysis, handling spatial autocorrelation and exploring spatial heterogeneity, generally and with GW models (as shown in Figure \ref{fig:fig1}) is due to a number of factors [@comber2020gwr]: 
+
+- the increased availability of spatial data (i.e. data with some form of location attached); 
+- recognition in different domains of the benefits of quantifying spatial patterns and the inferential advantages of approaches that explicitly consider location (e.g. cluster analysis, spatially informed regression, handling spatial dependencies); 
+- the relative simplicity and conceptual elegance of GWR / GW models which fuelled their popularity;
+- the inclusion of basic GWR tools in a number of commercial software packages (e.g. ArcGIS, Carto, although the ArcGIS implementation fails benchmarking tests [@brunsdon2020opening]). 
+
+What is shown by the references cited above, Figure \ref{fig:fig1}, Table X, the adoption of GW methods by diverse users, etc, is the extent to which they are being used to examine critical societal questions and underpin important research. We have a background in reproducible and open research and we are excited about the societal benefits might emerge from this project if these communities were fully mobilised to develop them further.
+
+## What we are proposing: `gwverse` 
+
+The project team have recently proposed a new `gwverse` structure [@comber2021gwverse] based on a modular structure and adopting a *function factory* approach. Our proposed structure and module dependencies are shown in Figure \ref{fig:fig2}. 
+
+```{tikz, fig2, echo=FALSE, fig.align="center", out.width="0.9\\linewidth", fig.cap = "The proposed gwverse structure.", fig.height=3}
+\usetikzlibrary{positioning,angles,calc,intersections,quotes}
+\usetikzlibrary{shapes.geometric,arrows.meta,arrows}
+\usetikzlibrary{babel}
+
+\begin{tikzpicture}[node distance= 90mm and 10mm]
+\tikzstyle{main}   = [draw,line width=0.4mm, rectangle, minimum width=1.5cm,
+                      minimum height=1cm, rounded corners,fill=blue!20!white]
+\tikzstyle{core}  =  [main,fill=red!20!white]
+\tikzstyle{uber}  =  [main,fill=yellow!20!white]
+\tikzstyle{meza}  =  [main,fill=blue!10!white]
+\tikzstyle{peri}  =  [main,fill=cyan!20!white]
+
+\tikzstyle{arrowt} = [<-,>=triangle 60, line width=0.4mm]
+\tikzstyle{arrowf} = [arrowt,->]
+
+\node[core] (gw)         {\texttt{\large gw}}; 
+\node[meza] (gwglm)      [below =30mm of gw]     {\texttt{\large gwglm}};
+\node[main] (gwr)        [right = 0.4cm of gwglm]     {\texttt{\large gwregr}}; 
+\node[uber] (gwverse)    [below = 30mm of gwglm]     {\texttt{\LARGE gwverse}}; 
+\node[main] (gwpca)      [left = 0.4cm of gwglm]      {\texttt{\large gwpca}}; 
+\node[main] (gwdesc)     [right =0.4cm of gwr]     {\texttt{\large gwdesc}}; 
+\node[main] (gwother)    [left =0.4cm of gwpca]    {\texttt{\large gwother}}; 
+\node[peri] (gwobscure)  [left =0.4cm of gwother]  {\texttt{\large gwobscure}}; 
+\node[peri] (gwspecial)  [right =0.4cm of gwdesc]  {\texttt{\large gwspecial}}; 
+\draw[arrowf] (gw) -- (gwr); 
+\draw[arrowf] (gw) -- (gwpca); 
+\draw[arrowf] (gw.south east) -| (gwdesc); 
+\draw[arrowf] (gw.south west) -| (gwother);
+\draw[arrowf] (gw.east) -| (gwspecial);
+\draw[arrowf] (gw.west) -| (gwobscure);
+\draw[arrowf] (gw) -- (gwglm);
+\draw[arrowt] (gwverse) -- (gwr); 
+\draw[arrowt] (gwverse) -- (gwpca); 
+\draw[arrowt] (gwverse) -| (gwdesc); 
+\draw[arrowt] (gwverse) -| (gwother);
+\draw[arrowt] (gwverse) -- (gwglm);
+\draw[arrowt] (gwglm) -- (gwr);
+
+\end{tikzpicture} 
+
+```
+
+Modular package structure are seen in packages such as `tidyverse`, which when called loads a number of tidyverse-related packages. However, it doesn't load all tidyverse-related packages, because this may take time, and occupy resources. It loads more than the absolute basic `dplyr` package (for example, it loads `ggplot`) but not `feather`.  In a similar way, we propose to have an over-arching package called `gwverse` that loads many -- but not all -- GW-related packages.  The structure has, at its core, a package called `gw` that provides general helper functions for a GW analysis - but essentially provides a toolkit to be used in the construction of other GW modules. It includes tools for building GW functions, but not the functions themselves. 
+
+It is unlikely that people other than those developing GW tools will load the `gw` package directly, rather it is implicitly loaded (imported) when GW packages are loaded. In Figure \ref{fig:fig2}, the boxes represent packages, and the directional arrows imply 'makes use of' or 'draws functionality from'. So for example, `gwregr` (for GWR), `gwpca` (for GW PCA) and `gwdesc` (for GW descriptive statistics) will all use functions contained in `gw`. The mid-layer packages are individual GW applications,  and all of these make use of `gw`. When called, the `gwverse` package loads up several commonly used packages, although not all. The role of `gwrglm` (for GW generalised linear models) is slightly different as it will extensively borrow from the standard (Gaussian response) GWR code in `gwregr`, and hence also to load and run `gwglm` will require `gwregr` to be loaded as a dependency as well. The packages `gwobscure` and `gwspecial` are more specialised GW packages (as yet not identified), and so are not loaded via `gwverse`. 
+
+In this structure, the use of `gw` as the core package is essential to provide a consistent interface to all of the other functions, whereas `gwverse` provides a convenient wrapper for the modules.  The proposing team have created demonstrator  `gw` and `gwregr` packages that can undertake a GWR.
+
+Many `GWmodel` functions use some form of `for` loop to iterate through spatial problems. The An alternative is to take a function factory approach in combination with functionals. A `functional` is a function that has a function as its input and returns a vector as its output. They are commonly used alternatives to `for` loops because they are considered to be faster, but actually they promote tighter coding and the avoidance of temporary data structures and are more flexible. A `function factory` is a function that returns a function. They have the advantages of allowing values to be precomputed within them, saving computation time, of supporting a multi-level design approach that more closely reflect the structure of the problem being addressed (for example wrapping user defined kernel and bandwidth choices within a returned function) and in this way allow the complexity of the problem to be partitioned in into more easily understood (and testable) chunks [@wickham2019advanced]. Examples of current R packages that take this approach include `MCMC` [@geyer2020mcmc]
+
+Their key advantage is that functions generated by function factories have an enclosing environment that is an execution environment of the function factory. This allows, for example, the names of functions in the enclosing environment to be associated with different function bodies, have different values in different functions generated by function factories (for example a CV or an AIC evolution function in a GWR). Thus the "enclosing environment of the manufactured function is unique and constant" [@wickham2019advanced section 10.2.4]. 
+
+There are some potential technical considerations: 
+
+1. In function factories specific 'building block' functions are 'bound in' for ease of use, and, despite being open, explicit, consistent and overcoming the problems with R dot-dot-dot (`...`) parameter syntax  (partial parameter name matches, etc), there are potential problems, for example related very large environments to a function (such as a large spatial database). Thus there is a need for guidelines on good practice for function factories. 
+
+2. There may also be a need to link R to C++  to enable code to run faster, and if so, a consistent approach to incorporating compiled C++ routines would be needed,  and in addition to a GW core package (`gw`) providing R tools,  a similar set of core procedures in C++ may be needed.  
+
+3. Many users and developers use Python and consideration of interoperability could allow some degree of collaboration. This could be via the use of the `reticulate` library, which allows Python code to run within R.  A longer term goal may be to provide a suite of Python modules mirroring the `gwverse` approach,  encouraging the same development framework to run in parallel for the R and Python user communities.
+
+4. Interoperability between the `gwverse` approach and other R packages needs to be considered. For example,many users are now trained to work primarily with pipeline operators and designing `gwverse` functions to combine intuitively with tools from other packages is an important consideration.  For example,  one would wish `gwverse` functions to combine easily with functions from `sf`  and data manipulation tools from `tidyverse`.
+
+There are also some organizational considerations. We are proposing a family of R packages,  maintained on GitHub,  with periodic updates to CRAN.  Although the approach encourages collaboration, the project will require curation (much as CRAN does,  but on a much smaller scale) and structures for this needs to be agreed. This needs standards for package `gwverse` contribution, package checking, assessing whether vignettes are well written and with sufficient content,  and checking whether CRAN’s requirements are met when versions are submitted there. Similarly guidelines for developers need to be created,  possibly combined with a 'how-to' manual outlining the use of GitHub,  and the agreed curation framework.  In this way users may be encouraged to become developers.
+
+
+## Our community-driven approach 
+
+We conceptualise the GW community as being composed of 3 broad types: 
+
+1. \textbf{Users}: people who simply want to run an existing GW model
+2. \textbf{Power users}: people who want to understand the model mechanics and potentially extend functionality 
+3. \textbf{Developers}: people who want to create a new GW package (a `gwverse` module)
+The project will create materials (manuals and guidance) aimed at these three levels.
+
+We will support different communities of practice in different applications areas. In some cases the requirements of different communities will be segregated by the types of GW models they use as evidenced in the published scientific literature . For example, the Remote Sensing community tend to use GW PCA, GW correspondence analysis and GW discriminant analysis. Ecologists undertake GW regression, GW redundancy analysis, GW variance partitioning and GW canonical correspondence analysis. In Economics / Real Estate Market the focus in on GW regression. The Healthcare and Socio-economics communities use GW regression and GW PCA. The AI / ML community transcend all of these specific areas. Each type of users is present in each of these communities
+
+What we will do in the project with these communities:
+
+1. Undertake early engagement early in the project with these communities through Open Workshop (from month 3 for 3 months), with specific activities as punctuations in order to raise awareness, to identifying community requirements and community champions. We will endeavour to create and publish a list of nominated 'champions' to encourage them to engage and potentially enhance their profiles.
+
+2. Co-Develop resources for community-led initiatives. Outputs will include guidance for communities initiated workshops (e.g. Key GW considerations; accessing and running GW packages, etc), 'how-to' manuals outlining the use of GitHub, and focussed on issues relating to the development of gwverse packages (potentially borrowing from existing examples, agreed curation frameworks e.g. standards for package gwverse contribution (e.g. variable and object naming requirements), vignettes quality; whether  CRAN’s requirements are met for ultimate submission to CRAN, etc. 
+
+3. Provide on-line forums for different users via the the GitHub repository and associated website. This brings together disparate GW working groups (of both users and developers) together under the same framework with mutual benefit to all, allowing rapid development of new GW models with a more streamlined community review process
+
+4. Develop some undergraduate-level training material that could be used in lectures, for example, to encourage other academics to adopt the software in their classes. 
+
+
+## Project Work
+
+(Please see the gwverse_gantt_v4.xlsx for the timelines. We can submit a separate 1 page Workplan)
+
+This project will employ a Research Software Engineer (RSE) for 2 years. The Co-Investigator team includes the originators of GWR and many GW models, the maintainer of the `GWmodel` R package, the Head of Research Computing at Leeds where the RSE will be based. We see this project as running a continuous two way exchange between the RSE and the Co-Investigators. Initially the RSE will have to be brought up to speed to understand aspects of spatial data structures in R, common tools for their analysis, the way that GW models work and the way that they have been implemented in GWmodel. At the same time the RSE will help the Co-Is improve their practice in the use community software approaches, for example with GitHub repos and website hosting. 
+
+The coding has a number of stages. The first stage is to get the RSE up to speed on GW paradigm. Then Tranche 1 will develop core `gw` and related modules: for basic GWR, GW GLM (e.g. Poisson, binomial regression), GW descriptive statistics and GW PCA. Tranche 2 will develop a generic GW framework, for GW Other to support user applications. Tranche 3 will create second level Multiscale GW tools and functionality and Tranche 4 will create tools to support user created Multiscale GW tools. There is some work to do around searches (brute force vs. heuristics) which may include C++ bridges, and specification options for GW models need to be included. 
+
+The RSE will:
+
+- set up the project GitHub repository (https://github.com/gwverse) and website, manage user community engagement with the GitHub hosted tools (Commits, Pulls, Pushes) (\textbf{Task 7})
+- establish principles for GitHub site management and operation (technical curation) (\textbf{Task 2})
+- develop code / software including package revisions (\textbf{Task 8}, \textbf{Task 9} & \textbf{Task 14})
+- manage user community engagement with the GitHub hosted tools (commits, pulls, pushes, etc) (\textbf{Task 7})
+- establish principles and upskill the Co-Investigators in developing open community driven robust software (\textbf{Task 6})
+
+The Co-Investigators will: 
+
+- upskill the RSE in spatial data, spatial analysis GWR and GW models (\textbf{Task 1} & \textbf{Task 4})
+- engage with diverse GW model user communities through workshops, seminars (\textbf{Task 5} & \textbf{Task 10})
+- provide scientific curation including developing benchmarking protocols for software testing and verification (for example, prior to the release of new package versions) (\textbf{Task 12})
+
+All members of the project team will:
+
+- create user facing materials, including vignettes for `gwverse` tools / modules and materials for workshops, seminars etc (\textbf{Task 3})
+- identify `gwverse` community champions to sustain it beyond the project lifecycle (\textbf{Task 11})
+- capture impact metrics and indicators (user engagement, downloads, publications, new R packages, new science, etc) (\textbf{Task 13})
+ 
+
+## Personnel and Roles (to be deleted)
+
+1. RSE / PDRA 100% 
+2. Lex Comber 15% - Project management
+3. Martin Callaghan 5% - main PDRA / RSE manager
+4. Nick Malleson 10% (May drop) or ERC who could make use of the software but hasn’t traditionally engaged in these kinds of software dev projects - good to get ECR perspective?)
+5. Paul Harris 10% - 
+6. Chris Brunsdon 10% in kind, 
+7. Binbin Lu 10% in kind, 
+
+All of the above Co-Is will undertaking the following project tasks: 
+Package/ code Benchmarking , Creating supporting materials (how to guides, protocols etc), Running / contributing to workshops, Community engagement
+
+
+## References (I will get thse formatted to take up a single page)
